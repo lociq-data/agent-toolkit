@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-05-14
+last_updated: 2026-05-15
 changelog: prompts/CHANGELOG.md
 ---
 
@@ -152,7 +152,7 @@ The `prop_type` source uses state-specific code maps. Florida uses DOR codes, Ar
 
 ## 6. Owners, ownership, and the cluster graph
 
-Ownership in LOCIQ is represented as a graph. A property has one or more owners, each owner may own multiple properties, and owners are grouped into clusters that represent meaningful relationships among them. The graph supports membership in multiple clusters simultaneously; a single owner may belong to a portfolio cluster, an LLC cluster, and a build-to-rent nexus all at once.
+Ownership in LOCIQ is represented as a graph. A property has one or more owners, each owner may own multiple properties, and owners are grouped into clusters that represent meaningful relationships among them. The graph supports membership in multiple clusters simultaneously; a single owner may belong to a portfolio cluster, an LLC cluster, and a mixed property owner cluster all at once.
 
 Four cluster types exist, each representing a different kind of relationship.
 
@@ -162,7 +162,7 @@ An **LLC cluster** groups owner entities whose mailing addresses concentrate at 
 
 A **business chain** groups canonical business entities operating across three or more distinct parcels. The cluster's existence means LOCIQ has identified a business with a presence at multiple locations — a regional chain, a franchise, or a multi-location operator. Cluster membership in `business_clusters` is the business entities themselves; the properties associated with each member entity are reachable through the cluster graph.
 
-A **B2R nexus** connects an owner to residential properties whose situs addresses match the owner's mailing address pattern when the owner is also linked to business-associated properties. The cluster's existence means LOCIQ has identified an owner whose mailing-address footprint suggests a relationship with residential parcels alongside their business activity. The detection is specific to the address-pattern signal; it does not infer institutional scale or rental operation.
+A **mixed property owner cluster** connects an owner to residential properties whose situs addresses match the owner's mailing address pattern when the owner is also linked to business-associated properties. The cluster's existence means LOCIQ has identified an owner whose mailing-address footprint suggests a relationship with residential parcels alongside their business activity. The detection is specific to the address-pattern signal; it does not infer institutional scale or rental operation.
 
 Cluster membership is many-to-many. An owner record may carry a `clusters` array showing all clusters the owner belongs to:
 
@@ -171,9 +171,9 @@ Cluster membership is many-to-many. An owner record may carry a `clusters` array
         "id": 10601,
         "name": "ASPEN PARTNERS LLC",
         "clusters": [
-          { "id": "PORT_0568397", "cluster_type": "portfolio" },
-          { "id": "LLC_0608546",  "cluster_type": "llc_cluster" },
-          { "id": "B2R_0612791",  "cluster_type": "b2r_nexus" }
+          { "id": "PORT_0568397",   "cluster_type": "portfolio" },
+          { "id": "LLC_0608546",    "cluster_type": "llc_cluster" },
+          { "id": "MIXED_0612791",  "cluster_type": "mixed_property_owner" }
         ]
       }
     }
@@ -197,7 +197,7 @@ A property reached through two clusters appears once in the response with a two-
 
 Cluster-traversal queries default to returning properties reached through any cluster the owner belongs to. A `cluster_type` filter narrows the traversal to specific types: `?cluster_type=portfolio` returns only portfolio-reached properties; `?cluster_type=portfolio,llc_cluster` returns properties reached through either. Absence of the filter means union across all cluster types.
 
-The four cluster types are orthogonal — they identify different kinds of relationships and a single entity legitimately belongs to multiple types. A confirmed multi-cluster membership is a strong signal of an entity operating in multiple modes (a portfolio owner who is also an LLC concentrated at a registered agent's address who is also part of a B2R footprint). The `clusters` array in responses is the structured representation of those modes; the relationship graph supports questions about each independently and in combination.
+The four cluster types are orthogonal — they identify different kinds of relationships and a single entity legitimately belongs to multiple types. A confirmed multi-cluster membership is a strong signal of an entity operating in multiple modes (a portfolio owner who is also an LLC concentrated at a registered agent's address who is also part of a mixed property owner footprint). The `clusters` array in responses is the structured representation of those modes; the relationship graph supports questions about each independently and in combination.
 
 ## 7. Businesses and how they attach to places
 
