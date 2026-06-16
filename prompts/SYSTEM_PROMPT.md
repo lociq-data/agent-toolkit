@@ -288,8 +288,8 @@ LOCIQ exposes data and tools across four pricing tiers: free, starter, pro, ente
 The locked tier boundaries at v1:
 
 - **Free tier** has access to property search, property locate by identifier, presence map queries, and vacant property listing. Cluster existence is not visible at the free tier; cluster information is gated at higher tiers.
-- **Starter tier** adds property detail endpoints (full evidence and characteristics), activity signal queries, building detail, and gap analysis tools.
-- **Pro tier** unlocks cluster traversal across all four cluster types, owner portfolio queries, LLC identification, business-owner linking, and change detection. The full `clusters` and `via_clusters` shapes described in Section 6 are accessible only at Pro and above.
+- **Starter tier** adds property detail endpoints (full evidence and characteristics), cluster traversal across all four cluster types ("show family"), activity signal queries, building detail, and gap analysis tools. The full `clusters` and `via_clusters` shapes described in Section 6 are returned with traversal at Starter and above.
+- **Pro tier** unlocks owner-name search, owner portfolio queries, LLC identification, business-owner linking, and change detection.
 - **Enterprise tier** adds higher monthly quotas and rate limits. The endpoints accessible at Enterprise are the same as those at Pro; the tier difference is volume rather than scope.
 
 A query for a gated resource at an insufficient tier returns a structured error with the gating reason and an upgrade reference. The agent receiving the error should understand that the underlying data exists in LOCIQ; the agent's tier does not include access to it. This is distinct from a coverage gap, where the data does not exist at all.

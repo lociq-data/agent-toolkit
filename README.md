@@ -36,7 +36,7 @@ The reference implementation is intentionally small. Read it, understand it, the
 
 ## Why this exists
 
-LOCIQ's relationship graph — portfolios, LLC clusters, business chains, build-to-rent nexuses — is the moat. The graph is queryable through standard API endpoints, but agents trip over the shape: which tool to call first, how to compose tools, what the confidence tiers mean, when "I don't know" is the right answer.
+LOCIQ's relationship graph — portfolios, LLC clusters, business chains, mixed-property owners — is the moat. The graph is queryable through standard API endpoints, but agents trip over the shape: which tool to call first, how to compose tools, what the confidence tiers mean, when "I don't know" is the right answer.
 
 This toolkit is the answer to that. The system prompt teaches the shape. The reference implementation shows the integration. The cookbook ships proven workflows so your agent doesn't have to discover them.
 
