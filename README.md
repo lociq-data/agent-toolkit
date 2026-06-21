@@ -10,9 +10,9 @@ This toolkit is for developers and AI engineers using [LOCIQ](https://lociq.ai) 
 
 You bring your own LLM (Claude, GPT, Gemini, whatever). You bring your own agent framework or write the loop yourself. LOCIQ provides the data, the tools, and the workflows. Your agent does the rest.
 
-## Status (2026-05-13)
+## Status (2026-06-20)
 
-This repo is being built in the open. **Today there's scaffolding and the documents you're reading.** SYSTEM_PROMPT.md and the Python reference implementation are landing in coming days; cookbook entries follow. Star the repo to track. File an issue if you want a specific workflow in the cookbook.
+SYSTEM_PROMPT.md and the Python reference implementation are live. Cookbook entries are in progress. Star the repo to track. File an issue if you want a specific workflow in the cookbook.
 
 ## What's in here
 
@@ -21,18 +21,24 @@ This repo is being built in the open. **Today there's scaffolding and the docume
     ├── reference/         agent.py — minimum-viable Python agent connecting to LOCIQ's MCP server
     └── cookbook/          Workflow recipes: problem statement + complete code + expected output + gotchas
 
-## Quickstart (coming soon)
+## What you need
 
-The quickstart below describes the target shape. It does not run today.
+- **A LOCIQ API key** — the only credential LOCIQ requires. Sign up at [lociq.ai/signup](https://lociq.ai/signup).
+- **An LLM provider key** — yours, for your agent. LOCIQ never sees or needs it. Bring any provider you like.
+- Python 3.10+ (for the reference implementation)
+
+## Quickstart
 
     git clone https://github.com/lociq-data/agent-toolkit.git
     cd agent-toolkit
     pip install -r reference/requirements.txt
-    export LOCIQ_API_KEY=your_key
-    export ANTHROPIC_API_KEY=your_key
+    export LOCIQ_API_KEY=your_key        # the only key LOCIQ requires
+    export LLM_API_KEY=your_key          # your own LLM provider key (for this script only)
     python reference/agent.py "Find every property owned by Big Sky Properties LLC and its related entities"
 
 The reference implementation is intentionally small. Read it, understand it, then build the agent you actually need.
+
+**Provider note:** The reference agent uses Anthropic's Claude for illustration only. LOCIQ is provider-neutral — the LLM is entirely your choice. To use OpenAI, Gemini, a local model, or any other provider, replace `call_llm()` in `reference/agent.py` (the single clearly-marked swap point). LOCIQ's MCP server requires only a LOCIQ API key; it never sees or needs your LLM key. For general MCP client integration (Claude Desktop, Cursor, etc.), see [modelcontextprotocol.io](https://modelcontextprotocol.io).
 
 ## Why this exists
 
