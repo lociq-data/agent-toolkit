@@ -1,5 +1,15 @@
 # SYSTEM_PROMPT.md Changelog
 
+## 2026-06-25 — coverage update + honesty markers
+
+Three drift fixes against the served MCP surface:
+
+1. Coverage corrected: eight → nine states. The prompt understated coverage; served reality is nine (AZ, CO, FL, ID, IN, MT, NC, NE, WA). Whether a state was newly added or simply miscounted in the prior draft is not asserted.
+2. `data_quality` field documented (Section 6). `get_cluster` results carry `data_quality: {complete: true/false}` — the first per-result honesty field, landed in §154 (cr_app). Agents should treat incomplete clusters as partial, not empty.
+3. `requires_upgrade` response shape documented (Section 10). The structured tier-gate signal (`error`, `current_tier`, `tier_needed`, `upgrade_url`) is now described with a concrete example so agents can handle tier gating programmatically rather than treating it as an opaque error.
+
+Classification of change: additive. No existing fields renamed or removed. Agents that did not previously handle `data_quality` or `requires_upgrade` will now have documentation for signals they were already receiving.
+
 ## 2026-05-14 — initial draft
 
 First public draft of the LOCIQ agent system prompt. Twelve sections, narrative structure, approximately 3,200 words.

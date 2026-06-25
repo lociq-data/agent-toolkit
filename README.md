@@ -10,6 +10,8 @@ This toolkit is for developers and AI engineers using [LOCIQ](https://lociq.ai) 
 
 You bring your own LLM (Claude, GPT, Gemini, whatever). You bring your own agent framework or write the loop yourself. LOCIQ provides the data, the tools, and the workflows. Your agent does the rest.
 
+**Already have an MCP client?** See [CONNECTING.md](CONNECTING.md) — the no-code path. Point any MCP client at LOCIQ with just a LOCIQ API key, no LLM key required from LOCIQ's side.
+
 ## Status (2026-06-20)
 
 SYSTEM_PROMPT.md and the Python reference implementation are live. Cookbook entries are in progress. Star the repo to track. File an issue if you want a specific workflow in the cookbook.

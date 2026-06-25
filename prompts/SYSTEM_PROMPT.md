@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-05-15
+last_updated: 2026-06-25
 changelog: prompts/CHANGELOG.md
 ---
 
@@ -9,7 +9,7 @@ This document describes LOCIQ's data: what it represents, what it does and does 
 
 The document teaches concepts. It does not document specific tools — the MCP server's tool registrations describe individual tools and their parameters. It does not prescribe agent behavior — how to communicate findings to users, what tone to use, and what to surface or omit are decisions belonging to the agent and the product it powers. The OpenAPI specification at `https://docs.lociq.ai/openapi.json` is the authoritative source for response shapes; examples in this document are illustrative and intentionally minimal.
 
-LOCIQ is a property intelligence graph covering parcels, ownership, businesses, and the relationships among them across eight U.S. states. The data is parcel-anchored: each parcel is a real-world unit with a stable identifier, and other entities (owners, businesses, activity signals) attach to parcels through evidence. LOCIQ does not own the underlying data; it ingests from county assessors, secretary-of-state filings, permit systems, OpenStreetMap, and other public sources, and resolves them into a graph. Coverage and freshness vary by state and source.
+LOCIQ is a property intelligence graph covering parcels, ownership, businesses, and the relationships among them across nine U.S. states (AZ, CO, FL, ID, IN, MT, NC, NE, WA). The data is parcel-anchored: each parcel is a real-world unit with a stable identifier, and other entities (owners, businesses, activity signals) attach to parcels through evidence. LOCIQ does not own the underlying data; it ingests from county assessors, secretary-of-state filings, permit systems, OpenStreetMap, and other public sources, and resolves them into a graph. Coverage and freshness vary by state and source.
 
 The remainder of this document describes the shape of that graph, the confidence and evidence model that quantifies what LOCIQ knows, and the conceptual vocabulary that response shapes use.
 
@@ -199,6 +199,8 @@ Cluster-traversal queries default to returning properties reached through any cl
 
 The four cluster types are orthogonal — they identify different kinds of relationships and a single entity legitimately belongs to multiple types. A confirmed multi-cluster membership is a strong signal of an entity operating in multiple modes (a portfolio owner who is also an LLC concentrated at a registered agent's address who is also part of a mixed property owner footprint). The `clusters` array in responses is the structured representation of those modes; the relationship graph supports questions about each independently and in combination.
 
+Cluster results carry a `data_quality` field. A fully populated cluster reports `{"complete": true}`. A cluster whose membership could not be fully resolved reports `{"complete": false, "reason": "cluster_membership_missing", "claimed_members": N, "populated": 0}` — the cluster record exists but its member properties are not populated. An agent encountering an incomplete cluster should treat it as partial data, not as an empty or nonexistent cluster, and should not report a partial cluster as complete.
+
 ## 7. Businesses and how they attach to places
 
 Businesses in LOCIQ attach to parcels through evidence: address matches, point-in-polygon spatial joins, or proximity heuristics. Each attachment carries a `match_type` recording which method linked the business to the parcel, and a `match_confidence` recording how strong the link is.
@@ -267,7 +269,7 @@ The `vacancy_flag` field on a property's presence record is derived in part from
 
 ## 9. Coverage
 
-LOCIQ covers properties across eight U.S. states. Within those states, the depth of data available varies by data layer and by jurisdiction. Per-state and per-county coverage information is available through LOCIQ's data.
+LOCIQ covers properties across nine U.S. states (AZ, CO, FL, ID, IN, MT, NC, NE, WA). Within those states, the depth of data available varies by data layer and by jurisdiction. Per-state and per-county coverage information is available through LOCIQ's data.
 
 A query for properties in a jurisdiction LOCIQ has not ingested returns no results. This is not because the jurisdiction has no properties, but because LOCIQ has no data on it. The distinction matters: an empty result for an uncovered jurisdiction does not warrant the claim "no properties exist there." It warrants the claim "LOCIQ has no data on properties there."
 
@@ -295,6 +297,19 @@ The locked tier boundaries at v1:
 A query for a gated resource at an insufficient tier returns a structured error with the gating reason and an upgrade reference. The agent receiving the error should understand that the underlying data exists in LOCIQ; the agent's tier does not include access to it. This is distinct from a coverage gap, where the data does not exist at all.
 
 Tier-gated responses do not omit fields silently. A property response at the free tier includes the property's identity and classification; cluster traversal data is either absent (the agent did not request it) or returned as an upgrade-required marker (the agent requested it but the tier does not include it). The marker makes the gating explicit so agents can communicate the constraint to users honestly rather than presenting the response as complete.
+
+The structured upgrade signal is a JSON object with four fields:
+
+```json
+{
+  "error": "requires_upgrade",
+  "current_tier": "anonymous",
+  "tier_needed": "starter",
+  "upgrade_url": "https://lociq.ai/pricing"
+}
+```
+
+`current_tier` reports what the request authenticated as; `tier_needed` names the minimum tier required. An agent receiving this signal should surface the tier requirement and upgrade path to the user rather than retrying the same call or treating it as an unexpected failure.
 
 The four tiers map to four pricing levels. The tier associated with the agent's API key is fixed for the session; agents do not negotiate tier-up dynamically. Tier changes happen through the customer's account settings and propagate to subsequent API calls.
 
